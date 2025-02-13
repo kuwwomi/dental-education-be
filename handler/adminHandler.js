@@ -66,4 +66,50 @@ async function registerAdmin(req, res) {
   });
 }
 
-module.exports = { inviteAdmin, login, registerAdmin };
+async function forgotPasswordAdmin(req, res) {
+  const { email } = req.body;
+
+  const [result, error] = await adminService.forgotPassword(email);
+
+  if (error) {
+    const statusCode = error.code || 500;
+    return res.status(statusCode).send({
+      status: "failed",
+      message: error.message,
+    });
+  }
+
+  return res.send({
+    status: "success",
+    data: null,
+  });
+}
+
+async function verifyPassword(req, res) {
+  const { email, password } = req.body;
+
+  const [data, error] = await adminService.updatePassword(password, email);
+
+  if (error) {
+    return res.status(400).send({
+      status: "failed",
+      message: err.message,
+    });
+  }
+
+  return res.status(200).send({
+    meta: {
+      status: "success",
+      message: "OK",
+    },
+    data: null,
+  });
+}
+
+module.exports = {
+  inviteAdmin,
+  login,
+  registerAdmin,
+  forgotPasswordAdmin,
+  verifyPassword,
+};

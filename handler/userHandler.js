@@ -197,7 +197,7 @@ const {
       name: user.firstName + " " + user.lastName,
       email: email,
       link_code:
-        process.env.BASE_FE_URL + `resetPasswordUser.html?email=${email}`,
+        process.env.BASE_FE_URL + `resetPassUser.html?email=${email}`,
     };
     //send email
     await sendEmail("template_forgot", result);

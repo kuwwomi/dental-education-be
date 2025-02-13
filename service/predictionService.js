@@ -35,7 +35,10 @@ async function ListPredictions(email, data) {
       if (data !== "undefined") {
         result = await Prediction.findAll({
           where: {
-            type: "repeat-paper",
+            [Op.or]: [
+              { type: "year1" },
+              { type: "year2" }
+            ]
           },
           order: [["id", "DESC"]],
         });
@@ -43,8 +46,8 @@ async function ListPredictions(email, data) {
         result = await Prediction.findAll({
           where: {
             type: {
-              [Op.ne]: "repeat-paper", // Not equal to "repeat-paper"
-            },
+              [Op.notIn]: ["y1-repeat-paper", "y2-repeat-paper"]
+            }
           },
           order: [["id", "DESC"]],
         });
@@ -54,7 +57,10 @@ async function ListPredictions(email, data) {
         result = await Prediction.findAll({
           where: {
             predictor_email: email,
-            type: "repeat-paper",
+            [Op.or]: [
+              { type: "year1" },
+              { type: "year2" }
+            ]
           },
           order: [["id", "DESC"]],
         });
@@ -63,8 +69,8 @@ async function ListPredictions(email, data) {
           where: {
             predictor_email: email,
             type: {
-              [Op.ne]: "repeat-paper", // Not equal to "repeat-paper"
-            },
+              [Op.notIn]: ["year1", "year2"]
+            }
           },
           order: [["id", "DESC"]],
         });
@@ -86,8 +92,11 @@ async function ListAnalytics(email) {
         [Sequelize.fn("COUNT", Sequelize.col("result")), "count"], // Correct format for COUNT
       ],
       where: {
-        type: "repeat-paper",
-        predictor_email : email
+        predictor_email: email,
+        [Op.or]: [
+          { type: "year1" },
+          { type: "year2" }
+        ]
       },
       group: ["result", "semester"],
     });
@@ -104,15 +113,18 @@ async function deletePrediction(email, type) {
       where: {
         predictor_email: email,
         type: {
-          [Op.not]: "repeat-paper",
-        },
+          [Op.notIn]: ["year1", "year2"]
+        }
       },
     };
     if (type == "repeat-paper") {
       whereCondition = {
         where: {
           predictor_email: email,
-          type: "repeat-paper",
+          [Op.or]: [
+            { type: "year1" },
+            { type: "year2" }
+          ]
         },
       };
     }

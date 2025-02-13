@@ -104,4 +104,60 @@ async function LoginAdmin(body) {
   }
 }
 
-module.exports = { createAdmin, updatePasswordAdmin, LoginAdmin };
+async function forgotPassword(email) {
+  try {
+    const user = await Admin.findOne({
+      where: {
+        email: email,
+      },
+    });
+
+    if (!user) {
+      return [null, new AppError("User Not Found", 400)];
+    }
+
+    const payloadEmail = {
+      to: email,
+      subject: "Reset Password",
+      link_code: process.env.BASE_FE_URL2 + `reset_pass.html?email=${email}`,
+    };
+
+    await sendEmail("template_forgot", payloadEmail);
+
+    return [null, null];
+  } catch (err) {
+    console.log(err);
+    return [null, new AppError("error in server", 500)];
+  }
+}
+
+async function updatePassword(password, email) {
+  const user = await Admin.findOne({
+    where: {
+      email: email,
+    },
+  });
+  const hashedPassword = await bcrypt.hash(password, Number(salt));
+
+  if (!user) {
+    return [null, new AppError("Admin Not Found", 400)];
+  }
+  const body = {
+    password: hashedPassword,
+  };
+
+  const userUpdate = await Admin.update(body, {
+    where: {
+      id: user.id,
+    },
+  });
+  return [null, null];
+}
+
+module.exports = {
+  createAdmin,
+  updatePasswordAdmin,
+  LoginAdmin,
+  forgotPassword,
+  updatePassword,
+};

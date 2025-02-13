@@ -63,8 +63,8 @@ async function insertPrediction(req, res) {
         FINAL_CGPA: req.body.average_cgpa,
       };
       break;
-    case "repeat-paper":
-      endpoint = "repeat-paper";
+    case "year1":
+      endpoint = "year1";
       payload = {
         STATE: req.body.state.toUpperCase(),
         AGE_DURING_ADMISSION: req.body.age,
@@ -73,6 +73,18 @@ async function insertPrediction(req, res) {
         FINAL_CGPA: req.body.average_cgpa,
       };
       break;
+
+    case "year2":
+      endpoint = "year2";
+      payload = {
+        STATE: req.body.state.toUpperCase(),
+        AGE_DURING_ADMISSION: req.body.age,
+        TOTAL_SEM: req.body.semester,
+        AVERAGE_CGPA: req.body.final_cgpa,
+        FINAL_CGPA: req.body.average_cgpa,
+      };
+      break;
+
     case "oral-biology":
       endpoint = "oral-biology";
       payload = {
@@ -230,8 +242,8 @@ async function bulkPrediction(req, res) {
             FINAL_CGPA: averageCgpa,
           };
           break;
-        case "repeat-paper":
-          endpoint = "repeat-paper";
+        case "year1":
+          endpoint = "year1";
           payload = {
             STATE: state.toUpperCase(),
             AGE_DURING_ADMISSION: age,
@@ -240,6 +252,16 @@ async function bulkPrediction(req, res) {
             FINAL_CGPA: averageCgpa,
           };
           break;
+          case "year2":
+            endpoint = "year2";
+            payload = {
+              STATE: state.toUpperCase(),
+              AGE_DURING_ADMISSION: age,
+              TOTAL_SEM: semester,
+              AVERAGE_CGPA: finalCgpa,
+              FINAL_CGPA: averageCgpa,
+            };
+            break;  
         case "microbiology":
           endpoint = "microbiology";
           payload = {
